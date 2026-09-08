@@ -8,7 +8,7 @@
   "allAtoms": [
     {
       "atomType": "Output",
-      "x": 0.98,
+      "x": 1,
       "y": 0.5,
       "uniqueID": "id-51410",
       "ioValues": [
@@ -20,32 +20,29 @@
     },
     {
       "atomType": "GitHubMolecule",
-      "x": 0.39973958333333337,
-      "y": 0.4685714285714285,
+      "x": 0.4,
+      "y": 0.5,
       "uniqueID": "id-51418",
       "name": "naca_profile",
       "ioValues": [
         {
           "name": "NACA_number",
-          "ioValue": 2408,
-          "currentEquation": "2408"
+          "ioValue": 2408
         },
         {
           "name": "Cord_length",
-          "ioValue": 10,
-          "currentEquation": "10"
+          "ioValue": 10
         },
         {
           "name": "number_of_points",
-          "ioValue": 50,
-          "currentEquation": "50"
+          "ioValue": 50
         }
       ],
       "topLevel": false,
       "allAtoms": [
         {
           "atomType": "Output",
-          "x": 0.98,
+          "x": 1,
           "y": 0.5,
           "uniqueID": "id-51413",
           "ioValues": [
@@ -57,8 +54,8 @@
         },
         {
           "atomType": "Code",
-          "x": 0.27299355594610425,
-          "y": 0.29949238578680204,
+          "x": 0.3,
+          "y": 0.3,
           "uniqueID": "id-51414",
           "ioValues": [
             {
@@ -80,24 +77,24 @@
         },
         {
           "atomType": "Input",
-          "x": 0.025384615384615384,
-          "y": 0.15384615384615385,
+          "x": 0,
+          "y": 0.1,
           "uniqueID": "id-51415",
           "name": "NACA_number",
           "options": []
         },
         {
           "atomType": "Input",
-          "x": 0.025384615384615384,
-          "y": 0.24615384615384617,
+          "x": 0,
+          "y": 0.2,
           "uniqueID": "id-51416",
           "name": "Cord_length",
           "options": []
         },
         {
           "atomType": "Input",
-          "x": 0.025384615384615384,
-          "y": 0.3384615384615385,
+          "x": 0,
+          "y": 0.3,
           "uniqueID": "id-51417",
           "name": "number_of_points",
           "options": []
@@ -158,8 +155,8 @@
     },
     {
       "atomType": "Extrude",
-      "x": 0.515625,
-      "y": 0.35428571428571426,
+      "x": 0.5,
+      "y": 0.4,
       "uniqueID": "id-51433",
       "ioValues": [
         {
@@ -175,14 +172,14 @@
   ],
   "allConnectors": [
     {
-      "ap2Name": "geometry",
-      "ap1ID": "id-51418",
-      "ap2ID": "id-51433"
-    },
-    {
       "ap2Name": "number or geometry",
       "ap1ID": "id-51433",
       "ap2ID": "id-51410"
+    },
+    {
+      "ap2Name": "geometry",
+      "ap1ID": "id-51418",
+      "ap2ID": "id-51433"
     }
   ],
   "unitsKey": "MM",
