@@ -1,13 +1,191 @@
 {
-    "atomType": "Molecule",
-    "x": 0,
-    "y": 0,
-    "uniqueID": "id-51409",
-    "name": "scratch_work",
-    "topLevel": true,
-    "allAtoms": [],
-    "allConnectors": [],
-    "unitsKey": "MM",
-    "fileTypeVersion": 1,
-    "filetypeVersion": 1
+  "atomType": "Molecule",
+  "x": 0,
+  "y": 0,
+  "uniqueID": "id-51409",
+  "name": "scratch_work",
+  "topLevel": true,
+  "allAtoms": [
+    {
+      "atomType": "Output",
+      "x": 0.98,
+      "y": 0.5,
+      "uniqueID": "id-51410",
+      "ioValues": [
+        {
+          "name": "number or geometry",
+          "ioValue": "__GEOMETRY_INPUT__"
+        }
+      ]
+    },
+    {
+      "atomType": "GitHubMolecule",
+      "x": 0.39973958333333337,
+      "y": 0.4685714285714285,
+      "uniqueID": "id-51418",
+      "name": "naca_profile",
+      "ioValues": [
+        {
+          "name": "NACA_number",
+          "ioValue": 2408,
+          "currentEquation": "2408"
+        },
+        {
+          "name": "Cord_length",
+          "ioValue": 10,
+          "currentEquation": "10"
+        },
+        {
+          "name": "number_of_points",
+          "ioValue": 50,
+          "currentEquation": "50"
+        }
+      ],
+      "topLevel": false,
+      "allAtoms": [
+        {
+          "atomType": "Output",
+          "x": 0.98,
+          "y": 0.5,
+          "uniqueID": "id-51413",
+          "ioValues": [
+            {
+              "name": "number or geometry",
+              "ioValue": "__GEOMETRY_INPUT__"
+            }
+          ]
+        },
+        {
+          "atomType": "Code",
+          "x": 0.27299355594610425,
+          "y": 0.29949238578680204,
+          "uniqueID": "id-51414",
+          "ioValues": [
+            {
+              "name": "chord",
+              "ioValue": 10
+            },
+            {
+              "name": "numPoints",
+              "ioValue": 50
+            },
+            {
+              "name": "nacaNumber",
+              "ioValue": 2408
+            }
+          ],
+          "interpreterVersion": 1,
+          "code": "/**\r\n * NACA 4-digit airfoil profile (2D). Pass the 4-digit code directly, e.g. 2412 or 0012.\r\n * Digit 1 = max camber (% chord), digit 2 = camber position (tenths of chord),\r\n * digits 3-4 = max thickness (% chord). Closed trailing edge.\r\n * chord in mm.\r\n */\r\nfunction run(\r\n  chord: number = 100,\r\n  numPoints: number = 50,\r\n  nacaNumber: number = 2412,\r\n): Assembly {\r\n  const code = Math.round(nacaNumber).toString().padStart(4, \"0\");\r\n  const maxCamber = parseInt(code[0], 10);\r\n  const camberPosition = parseInt(code[1], 10);\r\n  const thickness = parseInt(code.slice(2), 10);\r\n\r\n  const m = maxCamber / 100;\r\n  const p = camberPosition / 10;\r\n  const t = thickness / 100;\r\n\r\n  function camber(x: number): { yc: number; dyc: number } {\r\n    if (p === 0 || m === 0) return { yc: 0, dyc: 0 };\r\n    if (x < p) {\r\n      return {\r\n        yc: (m / (p * p)) * (2 * p * x - x * x),\r\n        dyc: ((2 * m) / (p * p)) * (p - x),\r\n      };\r\n    }\r\n    return {\r\n      yc: (m / ((1 - p) * (1 - p))) * (1 - 2 * p + 2 * p * x - x * x),\r\n      dyc: ((2 * m) / ((1 - p) * (1 - p))) * (p - x),\r\n    };\r\n  }\r\n\r\n  function thicknessDist(x: number): number {\r\n    return (\r\n      5 *\r\n      t *\r\n      (0.2969 * Math.sqrt(x) -\r\n        0.126 * x -\r\n        0.3516 * x * x +\r\n        0.2843 * x * x * x -\r\n        0.1036 * x * x * x * x)\r\n    );\r\n  }\r\n\r\n  const xs: number[] = [];\r\n  for (let i = 0; i <= numPoints; i++) {\r\n    xs.push((1 - Math.cos((Math.PI * i) / numPoints)) / 2);\r\n  }\r\n\r\n  const upper: [number, number][] = [];\r\n  const lower: [number, number][] = [];\r\n\r\n  for (const x of xs) {\r\n    const { yc, dyc } = camber(x);\r\n    const yt = thicknessDist(x);\r\n    const theta = Math.atan(dyc);\r\n\r\n    upper.push([(x - yt * Math.sin(theta)) * chord, (yc + yt * Math.cos(theta)) * chord]);\r\n    lower.push([(x + yt * Math.sin(theta)) * chord, (yc - yt * Math.cos(theta)) * chord]);\r\n  }\r\n\r\n  const points: [number, number][] = [...upper];\r\n  for (let i = numPoints - 1; i >= 1; i--) points.push(lower[i]);\r\n\r\n  let pen = replicad.draw(points[0]);\r\n  for (let i = 1; i < points.length; i++) {\r\n    pen = pen.lineTo(points[i]);\r\n  }\r\n  const profile = pen.close().translate(-chord / 2, 0);\r\n\r\n  return new Assembly({\r\n    geometry: profile,\r\n    tags: [\"airfoil\", \"naca\", `naca-${code}`],\r\n    bom: [`NACA ${code} airfoil profile, chord ${chord}mm`],\r\n  });\r\n}",
+          "compiledCode": "\"use strict\";\n/**\n * NACA 4-digit airfoil profile (2D). Pass the 4-digit code directly, e.g. 2412 or 0012.\n * Digit 1 = max camber (% chord), digit 2 = camber position (tenths of chord),\n * digits 3-4 = max thickness (% chord). Closed trailing edge.\n * chord in mm.\n */\nfunction run(chord = 100, numPoints = 50, nacaNumber = 2412) {\n    const code = Math.round(nacaNumber).toString().padStart(4, \"0\");\n    const maxCamber = parseInt(code[0], 10);\n    const camberPosition = parseInt(code[1], 10);\n    const thickness = parseInt(code.slice(2), 10);\n    const m = maxCamber / 100;\n    const p = camberPosition / 10;\n    const t = thickness / 100;\n    function camber(x) {\n        if (p === 0 || m === 0)\n            return { yc: 0, dyc: 0 };\n        if (x < p) {\n            return {\n                yc: (m / (p * p)) * (2 * p * x - x * x),\n                dyc: ((2 * m) / (p * p)) * (p - x),\n            };\n        }\n        return {\n            yc: (m / ((1 - p) * (1 - p))) * (1 - 2 * p + 2 * p * x - x * x),\n            dyc: ((2 * m) / ((1 - p) * (1 - p))) * (p - x),\n        };\n    }\n    function thicknessDist(x) {\n        return (5 *\n            t *\n            (0.2969 * Math.sqrt(x) -\n                0.126 * x -\n                0.3516 * x * x +\n                0.2843 * x * x * x -\n                0.1036 * x * x * x * x));\n    }\n    const xs = [];\n    for (let i = 0; i <= numPoints; i++) {\n        xs.push((1 - Math.cos((Math.PI * i) / numPoints)) / 2);\n    }\n    const upper = [];\n    const lower = [];\n    for (const x of xs) {\n        const { yc, dyc } = camber(x);\n        const yt = thicknessDist(x);\n        const theta = Math.atan(dyc);\n        upper.push([(x - yt * Math.sin(theta)) * chord, (yc + yt * Math.cos(theta)) * chord]);\n        lower.push([(x + yt * Math.sin(theta)) * chord, (yc - yt * Math.cos(theta)) * chord]);\n    }\n    const points = [...upper];\n    for (let i = numPoints - 1; i >= 1; i--)\n        points.push(lower[i]);\n    let pen = replicad.draw(points[0]);\n    for (let i = 1; i < points.length; i++) {\n        pen = pen.lineTo(points[i]);\n    }\n    const profile = pen.close().translate(-chord / 2, 0);\n    return new Assembly({\n        geometry: profile,\n        tags: [\"airfoil\", \"naca\", `naca-${code}`],\n        bom: [`NACA ${code} airfoil profile, chord ${chord}mm`],\n    });\n}\n"
+        },
+        {
+          "atomType": "Input",
+          "x": 0.025384615384615384,
+          "y": 0.15384615384615385,
+          "uniqueID": "id-51415",
+          "name": "NACA_number",
+          "options": []
+        },
+        {
+          "atomType": "Input",
+          "x": 0.025384615384615384,
+          "y": 0.24615384615384617,
+          "uniqueID": "id-51416",
+          "name": "Cord_length",
+          "options": []
+        },
+        {
+          "atomType": "Input",
+          "x": 0.025384615384615384,
+          "y": 0.3384615384615385,
+          "uniqueID": "id-51417",
+          "name": "number_of_points",
+          "options": []
+        }
+      ],
+      "allConnectors": [
+        {
+          "ap2Name": "number or geometry",
+          "ap1ID": "id-51414",
+          "ap2ID": "id-51413"
+        },
+        {
+          "ap2Name": "nacaNumber",
+          "ap1ID": "id-51415",
+          "ap2ID": "id-51414"
+        },
+        {
+          "ap2Name": "chord",
+          "ap1ID": "id-51416",
+          "ap2ID": "id-51414"
+        },
+        {
+          "ap2Name": "numPoints",
+          "ap1ID": "id-51417",
+          "ap2ID": "id-51414"
+        }
+      ],
+      "parentRepo": {
+        "lastFoundGit": "2026-09-08T10:23:38.942Z",
+        "privateRepo": false,
+        "repoName": "naca_profile",
+        "dateCreated": "2026-08-18T17:53:06Z",
+        "likes": 0,
+        "pngURL": "https://raw.githubusercontent.com/Moldudley/naca_profile/main/project.png",
+        "readMe": "https://raw.githubusercontent.com/Moldudley/naca_profile/master/README.md?sanitize=true",
+        "yyyy": 2026,
+        "topMoleculeID": "id-739",
+        "userSetAsThumbnail": false,
+        "githubMoleculesUsed": [],
+        "html_url": "https://github.com/Moldudley/naca_profile",
+        "topics": [],
+        "pullRequests": [],
+        "userSetThumbnail": true,
+        "parentRepo": null,
+        "forks": 0,
+        "dateModified": "739846",
+        "ranking": 5.7,
+        "searchField": "naca_profile moldudley creates a naca airfoil profile based on camber, naca number, and length ",
+        "owner": "Moldudley",
+        "description": "creates a naca airfoil profile based on camber, naca number, and length",
+        "contentURL": "https://raw.githubusercontent.com/Moldudley/naca_profile/master/project.abundance?sanitize=true",
+        "svgURL": "https://raw.githubusercontent.com/Moldudley/naca_profile/master/project.svg?sanitize=true",
+        "isLocal": false
+      },
+      "unitsKey": "MM",
+      "fileTypeVersion": 1,
+      "lastReloadedFromGithubAt": 1788890016780
+    },
+    {
+      "atomType": "Extrude",
+      "x": 0.515625,
+      "y": 0.35428571428571426,
+      "uniqueID": "id-51433",
+      "ioValues": [
+        {
+          "name": "geometry",
+          "ioValue": "__GEOMETRY_INPUT__"
+        },
+        {
+          "name": "height",
+          "ioValue": 10
+        }
+      ]
+    }
+  ],
+  "allConnectors": [
+    {
+      "ap2Name": "geometry",
+      "ap1ID": "id-51418",
+      "ap2ID": "id-51433"
+    },
+    {
+      "ap2Name": "number or geometry",
+      "ap1ID": "id-51433",
+      "ap2ID": "id-51410"
+    }
+  ],
+  "unitsKey": "MM",
+  "fileTypeVersion": 1,
+  "filetypeVersion": 1
 }
