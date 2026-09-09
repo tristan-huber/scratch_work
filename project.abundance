@@ -77,24 +77,24 @@
         },
         {
           "atomType": "Input",
-          "x": 0,
-          "y": 0.1,
+          "x": 0.025384615384615384,
+          "y": 0.15384615384615385,
           "uniqueID": "id-51415",
           "name": "NACA_number",
           "options": []
         },
         {
           "atomType": "Input",
-          "x": 0,
-          "y": 0.2,
+          "x": 0.025384615384615384,
+          "y": 0.24615384615384617,
           "uniqueID": "id-51416",
           "name": "Cord_length",
           "options": []
         },
         {
           "atomType": "Input",
-          "x": 0,
-          "y": 0.3,
+          "x": 0.025384615384615384,
+          "y": 0.3384615384615385,
           "uniqueID": "id-51417",
           "name": "number_of_points",
           "options": []
@@ -168,6 +168,101 @@
           "ioValue": 10
         }
       ]
+    },
+    {
+      "atomType": "Assembly",
+      "x": 0.5494791666666667,
+      "y": 0.7085714285714285,
+      "uniqueID": "id-51454",
+      "ioValues": [
+        {
+          "name": "Shape 1",
+          "ioValue": null
+        },
+        {
+          "name": "Shape 2",
+          "ioValue": null
+        }
+      ]
+    },
+    {
+      "atomType": "Rectangle",
+      "x": 0.34375,
+      "y": 0.6971428571428572,
+      "uniqueID": "id-51458",
+      "ioValues": [
+        {
+          "name": "x length",
+          "ioValue": 10
+        },
+        {
+          "name": "y length",
+          "ioValue": 10
+        }
+      ]
+    },
+    {
+      "atomType": "Extrude",
+      "x": 0.4368489583333333,
+      "y": 0.6342857142857142,
+      "uniqueID": "id-51462",
+      "ioValues": [
+        {
+          "name": "geometry",
+          "ioValue": "__GEOMETRY_INPUT__"
+        },
+        {
+          "name": "height",
+          "ioValue": -1,
+          "currentEquation": "-1"
+        }
+      ]
+    },
+    {
+      "atomType": "Molecule",
+      "x": 0.65234375,
+      "y": 0.6942857142857143,
+      "uniqueID": "id-51467",
+      "name": "Molecule",
+      "ioValues": [
+        {
+          "name": "foo",
+          "ioValue": "__GEOMETRY_INPUT__"
+        }
+      ],
+      "topLevel": false,
+      "allAtoms": [
+        {
+          "atomType": "Output",
+          "x": 0.98,
+          "y": 0.5,
+          "uniqueID": "id-51469",
+          "ioValues": [
+            {
+              "name": "number or geometry",
+              "ioValue": "__GEOMETRY_INPUT__"
+            }
+          ]
+        },
+        {
+          "atomType": "Input",
+          "x": 0.025384615384615384,
+          "y": 0.3142857142857143,
+          "uniqueID": "id-51471",
+          "name": "foo",
+          "type": "partselect",
+          "options": [],
+          "selectedLeafIndexes": []
+        }
+      ],
+      "allConnectors": [
+        {
+          "ap2Name": "number or geometry",
+          "ap1ID": "id-51471",
+          "ap2ID": "id-51469"
+        }
+      ],
+      "fileTypeVersion": 1
     }
   ],
   "allConnectors": [
@@ -177,9 +272,29 @@
       "ap2ID": "id-51410"
     },
     {
+      "ap2Name": "Shape 1",
+      "ap1ID": "id-51433",
+      "ap2ID": "id-51454"
+    },
+    {
       "ap2Name": "geometry",
       "ap1ID": "id-51418",
       "ap2ID": "id-51433"
+    },
+    {
+      "ap2Name": "foo",
+      "ap1ID": "id-51454",
+      "ap2ID": "id-51467"
+    },
+    {
+      "ap2Name": "geometry",
+      "ap1ID": "id-51458",
+      "ap2ID": "id-51462"
+    },
+    {
+      "ap2Name": "Shape 2",
+      "ap1ID": "id-51462",
+      "ap2ID": "id-51454"
     }
   ],
   "unitsKey": "MM",
